@@ -4,13 +4,14 @@ import { useState } from 'react'
 import { 
   Users, 
   FileText, 
-  DollarSign, 
+  IndianRupeeIcon, 
   AlertCircle, 
   Bell, 
   Search, 
   Menu,
   X
 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom' // Import useNavigate
 
 const sidebarItems = [
   { name: 'Dashboard', icon: FileText },
@@ -28,9 +29,10 @@ const recentActivities = [
 
 export default function InsuranceDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const navigate = useNavigate(); // Initialize useNavigate
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen w-screen bg-gray-100">
       {/* Sidebar */}
       <aside className={`bg-indigo-700 text-white w-64 space-y-6 py-7 px-2 absolute inset-y-0 left-0 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition duration-200 ease-in-out`}>
         <nav>
@@ -118,10 +120,10 @@ export default function InsuranceDashboard() {
                 <div className="w-full px-6 sm:w-1/2 xl:w-1/3 mt-4 xl:mt-0">
                   <div className="flex items-center px-5 py-6 bg-white rounded-md shadow-sm">
                     <div className="p-3 rounded-full bg-pink-600 bg-opacity-75">
-                      <DollarSign className="h-8 w-8 text-white" />
+                      <IndianRupeeIcon className="h-8 w-8 text-white" />
                     </div>
                     <div className="mx-5">
-                      <h4 className="text-2xl font-semibold text-gray-700">$23,694</h4>
+                      <h4 className="text-2xl font-semibold text-gray-700">₹23,694</h4>
                       <div className="text-gray-500">Total Premium</div>
                     </div>
                   </div>
@@ -163,6 +165,14 @@ export default function InsuranceDashboard() {
                         ))}
                       </tbody>
                     </table>
+                    <div className="p-4">
+                      <button 
+                        onClick={() => navigate('/plans')} 
+                        className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-200"
+                      >
+                        View Plan
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
