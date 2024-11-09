@@ -7,10 +7,15 @@
 2.Features
 
 •User Website
+
 •Login Authentication: Users authenticate with Aptos coin to ensure secure access.
+
 •Dashboard: Shows detailed policy information to keep users informed.
+
 •View & Apply for Policies: Users can view all available policies and apply directly.
+
 •Document Submission: Required documents are encrypted and stored on the Polygon blockchain via IPFS.
+
 •Monthly Premium Payments: Users can make regular payments through Razorpay
 
 3.Issuer Website
