@@ -1,7 +1,7 @@
 # Blockchain-Based Insurance Fraud Prevention System
 
 1.Overview
-•This project aims to prevent insurance fraud by leveraging blockchain, IPFS, machine learning, and secure payment gateways. It includes two main websites: one for users to manage claims and policies, and one for issuers to verify and process claims securely.
+•This project aims to prevent insurance fraud by leveraging blockchain, IPFS, machine learning, and secure payment gateways. It includes two main websites: one for users to manage claims and policies, and one for issuers to verify and process claims securely
 
 2.Features
 •User Website
