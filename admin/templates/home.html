@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmoyPolygon Testnet Transactions</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.5/dist/web3.min.js"></script>
+    <style>
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fa;
+            color: #333;
+        }
+
+        /* Navbar Styles */
+        nav {
+            background-color: #3a7d44;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #2d5b2a;
+        }
+
+        /* Active Link */
+        nav a.active {
+            background-color: #1e3a1a;
+        }
+
+        /* Home Page Styles */
+        #home {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #home h2 {
+            text-align: center;
+            color: #3a7d44;
+        }
+
+        #home p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Fraud Detection Page */
+        #fraud-detection {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #fraud-detection h2 {
+            text-align: center;
+            color: #3a7d44;
+        }
+
+        #fraud-detection p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Transactions Page */
+        #transactions-page {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        #transaction-list {
+            list-style: none;
+            padding: 5px;
+            margin: 0;
+        }
+
+        #transaction-list li {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #transaction-list li a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        #transaction-list li a:hover {
+            color: #0056b3;
+        }
+
+        #transaction-list li .block-number {
+            font-size: 0.9em;
+            color: #777;
+        }
+
+        .no-transactions {
+            font-size: 1.2em;
+            text-align: center;
+            color: #ff5722;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #007bff;
+            font-size: 1.5em;
+        }
+        .btn{
+            padding: 10px;
+            width: 100px;
+            background-color: #064003;
+            border-radius: 8px;
+            color: white;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            nav a {
+                font-size: 1em;
+                padding: 8px 15px;
+            }
+
+            #transaction-list li {
+                font-size: 0.9em;
+                padding: 10px;
+            }
+
+            #transaction-list li a {
+                font-size: 1em;
+            }
+
+            #fraud-detection, #home {
+                margin: 20px 10px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <a href="#" id="home-link" class="active">Home</a>
+        <a href="#transactions" id="transactions-link">Transactions</a>
+        <a href="#fraud-detection" id="fraud-detection-link">Fraud Detection</a>
+    </nav>
+
+    <!-- Home Page Content -->
+    <div id="home">
+        <h2>Welcome to the AmoyPolygon Testnet</h2>
+        <p>This is a platform where you can explore various blockchain transactions and learn about fraud detection techniques.</p>
+        <p>Click on "Transactions" to explore the transactions made to a specific contract, or click on "Fraud Detection" to learn about how we detect fraudulent activities on the blockchain.</p>
+        <a href="index.html"><button class="btn">Check </button></a>
+    </div>
+
+    
+
+    <!-- Transactions Page Content -->
+    <div id="transactions-page" style="display: none;">
+        <h1>Transactions for Contract Address: 0x5B17a068FD69b75A9041326dC0B265D3d7cBBbF7</h1>
+        <div id="transactions">
+            <div id="loading" class="loading">Loading transactions...</div>
+            <ul id="transaction-list"></ul>
+            <div id="no-transactions" class="no-transactions" style="display: none;">No transactions found for this contract.</div>
+        </div>
+    </div>
+
+    <!-- Fraud Detection Page Content -->
+    <div id="fraud-detection" style="display: none;">
+        <h2>Fraud Detection</h2>
+        <p>Fraud detection is crucial to ensure the integrity of blockchain transactions and to identify any malicious activity that could compromise users' assets.</p>
+        <p>Our system analyzes patterns in blockchain transactions and contract interactions to identify anomalies and suspicious behavior that might indicate fraud.</p>
+        <p>Some common types of fraud include:</p>
+        <ul>
+            <li>Phishing attacks</li>
+            <li>Front-running (Sandwich attacks)</li>
+            <li>Rug pulls and pump-and-dump schemes</li>
+        </ul>
+        <p>Stay tuned as we continuously improve our detection algorithms to provide the best protection for users on the Amoy Polygon Testnet.</p>
+    </div>
+    
+
+    <script>
+        // RPC URL for Amoy Polygon Testnet
+        const providerUrl = 'https://rpc-amoy.polygon.technology';  // Amoy Polygon Testnet RPC URL
+        const contractAddress = '0x5B17a068FD69b75A9041326dC0B265D3d7cBBbF7';  // The contract address to monitor
+
+        // Create Web3 instance
+        const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
+
+        // Function to fetch and display transactions (logs) from the contract
+        async function fetchTransactions() {
+            try {
+                document.getElementById("loading").style.display = "block";
+                const latestBlock = await web3.eth.getBlockNumber(); // Get latest block number
+
+                // Fetch logs for the contract address, starting from block 0 (or any specific block)
+                const logs = await web3.eth.getPastLogs({
+                    fromBlock: 0, // You can set a specific starting block if needed
+                    toBlock: latestBlock,  // Latest block
+                    address: contractAddress, // Contract address to monitor
+                });
+
+                document.getElementById("loading").style.display = "none";
+                displayTransactions(logs);
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("no-transactions").style.display = "block";
+            }
+        }
+
+        // Function to display the transactions in the UI
+        function displayTransactions(logs) {
+            const listElement = document.getElementById("transaction-list");
+            const noTxItem = document.getElementById("no-transactions");
+
+            // If no transactions are found
+            if (logs.length === 0) {
+                noTxItem.style.display = "block";
+                return;
+            }
+
+            // Hide no transactions message if logs are found
+            noTxItem.style.display = "none";
+
+            // Loop through each log and display it
+            logs.forEach((log) => {
+                const txLink = "https://mumbai.polygonscan.com/tx/${log.transactionHash}"; // Link to transaction on Polygonscan
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <a href="${txLink}" target="_blank">Transaction Hash: ${log.transactionHash}</a>
+                    <span class="block-number"> | Block Number: ${log.blockNumber}</span>
+                `;
+                listElement.appendChild(listItem);
+            });
+        }
+
+        // Poll the network every 15 seconds to get the latest transactions
+        setInterval(fetchTransactions, 15000);
+
+        // Fetch initial set of transactions on load
+        fetchTransactions();
+
+        // Switch between pages (Home, Transactions, and Fraud Detection)
+        document.getElementById("home-link").addEventListener("click", function() {
+            document.getElementById("home").style.display = "block";
+            document.getElementById("transactions-page").style.display = "none";
+            document.getElementById("fraud-detection").style.display = "none";
+            this.classList.add("active");
+            document.getElementById("transactions-link").classList.remove("active");
+            document.getElementById("fraud-detection-link").classList.remove("active");
+        });
+
+        document.getElementById("transactions-link").addEventListener("click", function() {
+            document.getElementById("home").style.display = "none";
+            document.getElementById("transactions-page").style.display = "block";
+            document.getElementById("fraud-detection").style.display = "none";
+            this.classList.add("active");
+            document.getElementById("home-link").classList.remove("active");
+            document.getElementById("fraud-detection-link").classList.remove("active");
+        });
+
+        document.getElementById("fraud-detection-link").addEventListener("click", function() {
+            document.getElementById("home").style.display = "none";
+            document.getElementById("transactions-page").style.display = "none";
+            document.getElementById("fraud-detection").style.display = "block";
+            this.classList.add("active");
+            document.getElementById("home-link").classList.remove("active");
+            document.getElementById("transactions-link").classList.remove("active");
+        });
+    </script>
+
+</body>
+</html>
