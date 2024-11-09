@@ -42,7 +42,7 @@ export default function ApplicationStatus() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen w-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">Application Status</h1>
         
@@ -60,52 +60,7 @@ export default function ApplicationStatus() {
           </p>
         </div>
 
-        {/* Document Upload Section */}
-        <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">Upload Required Documents</h2>
-          
-          <div className="space-y-4">
-            <div className="flex items-center">
-              <label className="w-1/3 text-gray-700 font-medium">ID Proof</label>
-              <input
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={(e) => handleDocumentChange(e, 'idProof')}
-                className="flex-1"
-              />
-              {documents.idProof && (
-                <p className="text-sm text-green-600 ml-4">Uploaded: {documents.idProof.name}</p>
-              )}
-            </div>
-
-            <div className="flex items-center">
-              <label className="w-1/3 text-gray-700 font-medium">Income Proof</label>
-              <input
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={(e) => handleDocumentChange(e, 'incomeProof')}
-                className="flex-1"
-              />
-              {documents.incomeProof && (
-                <p className="text-sm text-green-600 ml-4">Uploaded: {documents.incomeProof.name}</p>
-              )}
-            </div>
-
-            <div className="flex items-center">
-              <label className="w-1/3 text-gray-700 font-medium">Address Proof</label>
-              <input
-                type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={(e) => handleDocumentChange(e, 'addressProof')}
-                className="flex-1"
-              />
-              {documents.addressProof && (
-                <p className="text-sm text-green-600 ml-4">Uploaded: {documents.addressProof.name}</p>
-              )}
-            </div>
-          </div>
-        </div>
-
+      
         {/* Application History */}
         <div className="bg-white shadow-md rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Application History</h2>

@@ -1,8 +1,31 @@
 'use client'
 
-import { useState } from 'react'
-import { Car, Bike, Heart, Upload } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import Web3 from 'web3'
 import axios from 'axios'
+import { Car, Bike, Heart, Upload } from 'lucide-react'
+
+// Pinata credentials (replace with actual keys)
+const PINATA_API_URL = 'https://api.pinata.cloud/pinning/pinFileToIPFS';
+const PINATA_API_KEY = 'bbbe5ea261a462b68c1a';  // Replace with your API key
+const PINATA_SECRET_KEY = 'b2645d4eacb1eca88b5827ebf36d2351e63954ae3ffa292a3f2992eaaea33b46';  // Replace with your secret key
+const web3 = new Web3(window.ethereum || "https://rpc-amoy.polygon.technology"); // For local or network-specific RPC URL
+
+// Contract ABI and address (replace with actual contract details)
+const contractAddress = '0x5B17a068FD69b75A9041326dC0B265D3d7cBBbF7';  // Replace with your contract address
+const contractABI = [
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_recipient", "type": "address" },
+      { "internalType": "string", "name": "_encryptedLink", "type": "string" },
+      { "internalType": "string", "name": "_encryptedKey", "type": "string" }
+    ],
+    "name": "storeDocument",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
 
 const insuranceTypes = [
   { id: 'life', name: 'Life Insurance', icon: Heart },
@@ -16,96 +39,106 @@ const formFields = {
   bike: ['Bike Model', 'Bike Year', 'Registration Number', 'Bike Value'],
 }
 
-// Replace with your Pinata API Key and Secret
-const PINATA_API_KEY = 'bbbe5ea261a462b68c1a'
-const PINATA_SECRET_API_KEY = 'b2645d4eacb1eca88b5827ebf36d2351e63954ae3ffa292a3f2992eaaea33b46'
-
 export default function InsuranceApplication() {
   const [selectedType, setSelectedType] = useState(null)
   const [formData, setFormData] = useState({})
   const [documents, setDocuments] = useState([])
-  const [walletAddress, setWalletAddress] = useState('')
-  const [uploading, setUploading] = useState(false)
+  const [recipientAddress, setRecipientAddress] = useState('')
+
+  const web3 = new Web3(window.ethereum)
+
+  useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum.request({ method: 'eth_requestAccounts' });
+    } else {
+      console.error('Please install MetaMask!');
+    }
+  }, [])
 
   const handleTypeSelect = (type) => {
     setSelectedType(type)
     setFormData({})
-    setDocuments([])
-    setWalletAddress('')
   }
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleWalletAddressChange = (e) => {
-    setWalletAddress(e.target.value)
+  const handleFileUpload = (e) => {
+    setDocuments([...documents, ...e.target.files])
   }
 
-  const handleFileUpload = async (e) => {
-    const files = e.target.files
-    setUploading(true)
+  const handleRecipientAddressChange = (e) => {
+    setRecipientAddress(e.target.value)
+  }
 
-    try {
-      const uploadedFiles = []
+  const encryptData = (data) => {
+    // Simple encryption logic (you can use libraries like CryptoJS for more secure encryption)
+    const encrypted = btoa(data); // Base64 encoding as a placeholder for encryption
+    return encrypted;
+  }
 
-      for (let file of files) {
-        const uploadFormData = new FormData()
-        uploadFormData.append('file', file)
-        
-        // Pinata Metadata (optional)
-        const metadata = JSON.stringify({
-          name: file.name,
-          keyvalues: {
-            uploadedBy: 'Insurance Application'
-          }
-        })
-
-        uploadFormData.append('pinataMetadata', metadata)
-
-        // Pinata Options (optional)
-        const options = JSON.stringify({
-          cidVersion: 1,
-        })
-        uploadFormData.append('pinataOptions', options)
-
-        // Uploading to Pinata
-        const res = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', uploadFormData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            pinata_api_key: 'bbbe5ea261a462b68c1a',
-            pinata_secret_api_key: 'b2645d4eacb1eca88b5827ebf36d2351e63954ae3ffa292a3f2992eaaea33b46',
-          },
-        })
-
-        const fileUrl = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`
-        uploadedFiles.push(fileUrl)
+  const uploadToPinata = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const config = {
+      headers: {
+        'pinata_api_key': PINATA_API_KEY,
+        'pinata_secret_api_key': PINATA_SECRET_KEY
       }
-
-      setDocuments(uploadedFiles)
-      console.log('Files uploaded to Pinata:', uploadedFiles)
+    };
+    try {
+      const response = await axios.post(PINATA_API_URL, formData, config);
+      return response.data.IpfsHash;
     } catch (error) {
-      console.error('File upload to Pinata failed:', error)
-      alert('File upload to Pinata failed.')
-    } finally {
-      setUploading(false)
+      console.error('Error uploading to Pinata', error);
+      alert('Error uploading file to Pinata');
     }
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log('Form submitted:', {
-      type: selectedType,
-      ...formData,
-      documents,
-      walletAddress,
-    })
+  const storeDocumentInBlockchain = async (recipientAddress, encryptedLink, encryptedKey) => {
+    const contract = new web3.eth.Contract(contractABI, contractAddress)
+    const accounts = await web3.eth.getAccounts()
 
-    alert(`Files uploaded to IPFS and will be sent to wallet address: ${walletAddress}`)
+    try {
+      await contract.methods.storeDocument(recipientAddress, encryptedLink, encryptedKey)
+        .send({ from: accounts[0], gas: 2000000 })
+
+      alert('Document stored successfully on the blockchain!')
+    } catch (error) {
+      console.error('Error storing document:', error)
+      alert(`Error: ${error.message}`)
+    }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    try {
+      if (!recipientAddress) {
+        alert('Please enter the recipient address!');
+        return;
+      }
+
+      for (const document of documents) {
+        // Upload the document to Pinata
+        const ipfsLink = await uploadToPinata(document);
+        const encryptedLink = encryptData(ipfsLink);  // Encrypt the IPFS link
+        const encryptedKey = encryptData('some-encryption-key');  // You should securely encrypt the key in production
+
+        // Store the encrypted data on the blockchain
+        await storeDocumentInBlockchain(recipientAddress, encryptedLink, encryptedKey);
+      }
+
+      alert('Insurance application submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting the form:', error);
+      alert('Error submitting the form');
+    }
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen w-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">Apply for Insurance</h1>
         
@@ -116,11 +149,7 @@ export default function InsuranceApplication() {
               <button
                 key={type.id}
                 onClick={() => handleTypeSelect(type.id)}
-                className={`flex items-center justify-center p-4 rounded-lg transition-colors ${
-                  selectedType === type.id
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                className={`flex items-center justify-center p-4 rounded-lg transition-colors ${selectedType === type.id ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
               >
                 <type.icon className="w-6 h-6 mr-2" />
                 {type.name}
@@ -149,21 +178,6 @@ export default function InsuranceApplication() {
             ))}
 
             <div className="mb-4">
-              <label htmlFor="walletAddress" className="block text-sm font-medium text-gray-700 mb-1">
-                Recipient Wallet Address
-              </label>
-              <input
-                type="text"
-                id="walletAddress"
-                name="walletAddress"
-                value={walletAddress}
-                onChange={handleWalletAddressChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                required
-              />
-            </div>
-
-            <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Upload Documents
               </label>
@@ -173,14 +187,7 @@ export default function InsuranceApplication() {
                   <div className="flex text-sm text-gray-600">
                     <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
                       <span>Upload a file</span>
-                      <input
-                        id="file-upload"
-                        name="file-upload"
-                        type="file"
-                        className="sr-only"
-                        onChange={handleFileUpload}
-                        multiple
-                      />
+                      <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleFileUpload} multiple />
                     </label>
                     <p className="pl-1">or drag and drop</p>
                   </div>
@@ -189,13 +196,27 @@ export default function InsuranceApplication() {
               </div>
             </div>
 
+            <div className="mb-4">
+              <label htmlFor="recipientAddress" className="block text-sm font-medium text-gray-700 mb-1">
+                Recipient Address
+              </label>
+              <input
+                type="text"
+                id="recipientAddress"
+                name="recipientAddress"
+                value={recipientAddress}
+                onChange={handleRecipientAddressChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                required
+              />
+            </div>
+
             <div className="mt-6">
               <button
                 type="submit"
                 className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                disabled={uploading}
               >
-                {uploading ? 'Uploading...' : 'Submit Application'}
+                Submit Application
               </button>
             </div>
           </form>

@@ -12,6 +12,7 @@ import {
   X
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom' // Import useNavigate
+import BottomAboutUs from './footer'
 
 const sidebarItems = [
   { name: 'Dashboard', icon: FileText },
@@ -181,5 +182,8 @@ export default function InsuranceDashboard() {
         </main>
       </div>
     </div>
+    
   )
+  
 }
+

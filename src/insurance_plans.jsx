@@ -2,25 +2,40 @@
 
 import { useState } from 'react'
 import { Shield, ChevronRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 const insurancePlans = [
   { 
     id: 1, 
-    name: '2 Lakh Insurance', 
+    name: '5 Lakh Insurance', 
     coverage: 200000, 
     premium: 5000,
     description: 'Basic coverage for individuals looking for essential protection. Ideal for young professionals starting their financial planning journey.'
   },
   { 
     id: 2, 
-    name: '5 Lakh Insurance', 
-    coverage: 500000, 
+    name: '10 Lakh Insurance', 
+    coverage: 50000, 
+    premium: 5000,
+    description: 'Basic coverage for individuals looking for essential protection. Ideal for young professionals starting their financial planning journey.'
+  },
+  { 
+    id: 3, 
+    name: '20 Lakh Insurance', 
+    coverage: 800000, 
+    premium: 5000,
+    description: 'Basic coverage for individuals looking for essential protection. Ideal for young professionals starting their financial planning journey.'
+  },
+  { 
+    id: 4, 
+    name: '40 Lakh Insurance', 
+    coverage: 4500000, 
     premium: 10000,
     description: 'Comprehensive coverage for families. This plan offers a balance of affordability and substantial protection for your loved ones.'
   },
   { 
-    id: 3, 
-    name: '10 Lakh Insurance', 
+    id: 5, 
+    name: '50 Lakh Insurance', 
     coverage: 1000000, 
     premium: 18000,
     description: 'Premium coverage for high-value protection. Recommended for individuals with significant financial responsibilities or high-income earners.'
@@ -41,7 +56,7 @@ export default function InsurancePlans() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen w-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold text-center text-gray-900 mb-8">Choose Your Insurance Plan</h1>
         
@@ -71,6 +86,7 @@ export default function InsurancePlans() {
                 <p className="text-gray-600">Coverage: ₹{selectedPlan.coverage.toLocaleString()}</p>
                 <p className="text-gray-600">Premium: ₹{selectedPlan.premium.toLocaleString()}/year</p>
               </div>
+              <Link to='/application'>
               <button
                 onClick={handleApply}
                 className="bg-indigo-600 text-white py-2 px-6 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center"
@@ -78,6 +94,7 @@ export default function InsurancePlans() {
                 Apply Now
                 <ChevronRight className="ml-2 w-5 h-5" />
               </button>
+              </Link>
             </div>
           </div>
         )}
