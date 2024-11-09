@@ -17,6 +17,9 @@ async function main() {
   // Check if it's a contract instance with deployed() method
   console.log("Does deploy() object have deployed method?", documentStorage.deployed ? true : false);
 
+  // Log the transaction hash
+  console.log("Deployment transaction hash:", documentStorage.deployTransaction.hash);
+
   // If it's a valid contract instance, wait for deployment to complete
   if (documentStorage.deployed) {
     await documentStorage.deployed();
