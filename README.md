@@ -21,16 +21,23 @@
 3.Issuer Website
 
 •Claim Management: Displays all user-applied claims for review.
+
 •Fraud Detection: Machine learning model identifies potential hacker activity.
+
 •Blockchain Document Verification: Confirms document integrity using blockchain.
+
 •Manual Verification: Issuers can manually inspect claims as needed.
+
 •Claim Payment: Approved claims are processed through Razorpay for secure payouts to users.
 
 4.Technologies Used
 
 •Blockchain: Aptos coin for login, Polygon for data storage
+
 •IPFS: Secure, decentralized file storage
+
 •Machine Learning: Fraud detection and verification system
+
 •Razorpay: Payment processing for claims and premium payments
 
 5.Installation
@@ -39,12 +46,14 @@
 bash
 Copy code
 git clone https://github.com/your-username/your-repo-name.git
+
 •Install dependencies for each website:
 bash
 Copy code
 npm install
 Configure your blockchain and Razorpay API keys in .env.
 Usage
+
 •Start the user and issuer websites:
 bash
 Copy code
