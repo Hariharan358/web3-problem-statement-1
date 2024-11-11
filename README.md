@@ -31,7 +31,14 @@ TEAM GHASA
 
 •Claim Payment: Approved claims are processed through Razorpay for secure payouts to users.
 
-4.Technologies Used
+4.Admin Page
+
+•Claim Verification: Admins can verify, accept, or reject claims.
+
+•Machine Learning Integration: An ML model is used for fraud detection, assisting admins in identifying suspicious claims.
+
+
+5.Technologies Used
 
 •Blockchain: Aptos coin for login, Polygon for data storage
 
@@ -41,7 +48,9 @@ TEAM GHASA
 
 •Razorpay: Payment processing for claims and premium payments
 
-5.Installation
+•Flask: Backend framework for the admin page.
+
+6.Installation
 
 •Clone the repository:
 bash
@@ -59,8 +68,14 @@ Usage
 bash
 Copy code
 npm start
-Access the user website at http://localhost:3000/user.
-Access the issuer website at http://localhost:3000/issuer.
+Access the user website at http://localhost:3000/.
 Contributing
 Please submit issues and pull requests to help improve the system.
 
+
+7.Run the admin page:
+
+bash
+Copy code
+cd admin
+python app.py
