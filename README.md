@@ -55,7 +55,7 @@ TEAM GHASA
 •Clone the repository:
 bash
 Copy code
-git clone https://github.com/your-username/your-repo-name.git
+git clone https://github.com/Hariharan358/web3-problem-statement-1
 
 •Install dependencies for each website:
 bash
