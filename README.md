@@ -77,5 +77,7 @@ Please submit issues and pull requests to help improve the system.
 
 bash
 Copy code
+
 cd admin
+
 python app.py
